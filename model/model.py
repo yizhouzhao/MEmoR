@@ -146,7 +146,7 @@ class AMER(BaseModel):
         U_all = torch.stack(U_all, dim=0)
         # Classification
         log_prob = self.out_layer(U_all)
-        log_prob = F.log_softmax(log_prob)
+        log_prob = F.log_softmax(log_prob, dim=-1)
 
         return log_prob
 

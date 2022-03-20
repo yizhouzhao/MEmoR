@@ -15,22 +15,22 @@ class MEmoRDataset(data.Dataset):
     def __init__(self, config):
         super().__init__()
         self.config = config
-        annos = read_json(config['anno_file'])[config['emo_type']]
-        # ids = []
-        # tmp_annos = []
-        # with open(config['id_file']) as fin:
-        #     for line in fin.readlines():
-        #         ids.append(int(line.strip()))
+        self.annos = read_json(config['anno_file'])[config['emo_type']]
+        ids = []
+        tmp_annos = []
+        with open(config['id_file']) as fin:
+            for line in fin.readlines():
+                ids.append(int(line.strip()))
         
-        # for jj, anno in enumerate(annos):
-        #     if jj in ids:
-        #         tmp_annos.append(anno)
-        # annos = tmp_annos
+        for jj, anno in enumerate(self.annos):
+            if jj in ids:
+                tmp_annos.append(anno)
+        self.annos = tmp_annos
             
         emo_num = 9 if config['emo_type'] == 'primary' else 14
         self.emotion_classes = EMOTIONS[:emo_num]
         
-        data = read_json(config['data_file'])
+        self.data = read_json(config['data_file'])
         self.visual_features, self.audio_features, self.text_features = [], [], []
         self.visual_valids, self.audio_valids, self.text_valids = [], [], []
         self.labels = []
@@ -46,12 +46,12 @@ class MEmoRDataset(data.Dataset):
         self.personality_list = pfe.get_features()
         self.personality_features = []
         
-
-        for jj, anno in enumerate(tqdm(annos)):
+        print("vectorize features.....")
+        for jj, anno in enumerate(tqdm(self.annos)):
             clip = anno['clip']
             target_character = anno['character']
             target_moment = anno['moment']
-            on_characters = data[clip]['on_character']
+            on_characters = self.data[clip]['on_character']
             if target_character not in on_characters:
                 on_characters.append(target_character)
             on_characters = sorted(on_characters)
@@ -59,11 +59,11 @@ class MEmoRDataset(data.Dataset):
             charcaters_seq, time_seq, target_loc, personality_seq = [], [], [], []
             
             for character in on_characters:
-                for ii in range(len(data[clip]['seg_start'])):
+                for ii in range(len(self.data[clip]['seg_start'])):
                     charcaters_seq.append([0 if character != i else 1 for i in range(len(config['speakers']))])
                     time_seq.append(ii)
                     personality_seq.append(self.personality_list[character])
-                    if character == target_character and data[clip]['seg_start'][ii] <= target_moment < data[clip]['seg_end'][ii]:
+                    if character == target_character and self.data[clip]['seg_start'][ii] <= target_moment < self.data[clip]['seg_end'][ii]:
                         target_loc.append(1)
                     else:
                         target_loc.append(0)
@@ -74,7 +74,7 @@ class MEmoRDataset(data.Dataset):
             
             
             self.n_character.append(len(on_characters))
-            self.seg_len.append(len(data[clip]['seg_start']))
+            self.seg_len.append(len(self.data[clip]['seg_start']))
     
             self.personality_features.append(torch.stack(personality_seq))
             self.charcaters_seq.append(torch.tensor(charcaters_seq))
@@ -110,7 +110,7 @@ class MEmoRDataset(data.Dataset):
 
     def collate_fn(self, data):
         dat = pd.DataFrame(data)
-        return [pad_sequence(dat[i], True) for i in dat]
+        return [pad_sequence(tuple(dat[i]), True) for i in dat]
 
     def statistics(self):
         all_emotion = [0] * len(self.emotion_classes)

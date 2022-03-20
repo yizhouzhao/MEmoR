@@ -52,6 +52,18 @@
         "accuracy",
         "macro_f1",
         "weighted_f1"
-    ]
+    ],
+    "trainer": {
+        "type": "MEmoRTrainer",
+        "epochs": 1000,
 
+        "save_dir": "saved/",
+        "save_period": 50,
+        "verbosity": 2,
+        
+        "monitor": "max val_accuracy",
+        "early_stop": 50,
+
+        "tensorboard": true
+    }
 }

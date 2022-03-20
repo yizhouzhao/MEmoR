@@ -111,3 +111,6 @@ datasets/
 .idea/
 __MACOSX/
 data
+
+#
+parsed_data/
