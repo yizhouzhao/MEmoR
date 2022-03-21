@@ -1,6 +1,6 @@
 {
     "seed": 142857,
-    "name": "Train_9_2022_add_text",
+    "name": "Train_9_2022_add_text_video",
     "message":"MEmoR Baseline",
     "anno_file": "data/anno.json",
     "data_file": "data/data.json",
@@ -24,7 +24,8 @@
         "env_feature_dir": "data/features/visual_features/environment_features",
         "dim_env": 2048,
         "dim_obj": 1230,
-        "dim_face": 1024
+        "dim_face": 1024,
+        "add_visual": 768
     },
     "personality": {
         "used":true,

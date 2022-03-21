@@ -33,6 +33,11 @@ class AddAMER(BaseModel):
         n_classes = 9 if config['emo_type'] == 'primary' else 14
         D_e = config["model"]["args"]["D_e"]
         D_v = config["visual"]["dim_env"] + config["visual"]["dim_face"] + config["visual"]["dim_obj"]
+
+        if "add_visual" in config["visual"]:
+            D_v += config["visual"]["add_visual"]
+
+
         D_a = config["audio"]["feature_dim"]
         D_t = config["text"]["feature_dim"]
         D_p = config["personality"]["feature_dim"]

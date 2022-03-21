@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 from features import AudioFeatureExtractor, TextFeatureExtractor, VisualFeatureExtractor, PersonalityFeatureExtractor
-from features_add import AddTextFeatureExtractor
+from features_add import AddTextFeatureExtractor, AddVisualFeatureExtractor
 
 
 EMOTIONS = ["neutral","joy","anger","disgust","sadness","surprise","fear","anticipation","trust","serenity","interest","annoyance","boredom","distraction"]
@@ -41,7 +41,7 @@ class AddMEmoRDataset(data.Dataset):
         self.target_loc = []
         self.seg_len = [] 
         self.n_character = []
-        vfe = VisualFeatureExtractor(config)
+        
         afe = AudioFeatureExtractor(config)
         tfe = TextFeatureExtractor(config)
         pfe = PersonalityFeatureExtractor(config)
@@ -49,7 +49,13 @@ class AddMEmoRDataset(data.Dataset):
         self.personality_features = []
 
         # additional features
-        add_vfe = AddTextFeatureExtractor(config)
+        add_tfe = AddTextFeatureExtractor(config)
+        
+        if "add_visual" in config["visual"]:
+            vfe = AddVisualFeatureExtractor(config)
+        else:
+            vfe = VisualFeatureExtractor(config)
+
         self.text_features_add = []
 
         print("vectorize features.....")
@@ -79,7 +85,7 @@ class AddMEmoRDataset(data.Dataset):
             tf, t_valid = tfe.get_feature(anno['clip'], target_character)
 
             # additional features
-            tf_add, t_valid_add = add_vfe.get_feature(anno['clip'], target_character)
+            tf_add, t_valid_add = add_tfe.get_feature(anno['clip'], target_character)
             
             self.n_character.append(len(on_characters))
             self.seg_len.append(len(self.data[clip]['seg_start']))

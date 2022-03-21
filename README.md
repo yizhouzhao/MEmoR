@@ -24,7 +24,14 @@ The training and testing configures are set in `train.json` and `test.json`. To 
 ### Training
 ```
 python train.py -c train.json -d 0
-[gpu_id]
+
+
+Add Text: 
+python train.py -c config_add/train_add_text.json -d 0
+
+Add video
+python train.py -c config_add/train_add_text_video.json -d 0
+
 ```
 ### Testing
 ```

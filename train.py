@@ -8,16 +8,21 @@ from parse_config import ConfigParser
 from utils.util import create_model, create_dataloader, create_trainer
 import random
 
-# fix random seeds for reproducibility
-SEED = 125
-torch.manual_seed(SEED)
-torch.backends.cudnn.deterministic = True
-torch.backends.cudnn.benchmark = False
-np.random.seed(SEED)
-
-np.random.seed(0)
 
 def main(config):
+    # fix random seeds for reproducibility
+    SEED = 125
+    if "seed" in config._config:
+        SEED = config._config["seed"]
+        print("changing random seed to be: ", SEED)
+
+    torch.manual_seed(SEED)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    np.random.seed(SEED)
+    random.seed(SEED)
+
+
     logger = config.get_logger('train')
 
     # setup data_loader instances

@@ -1,1 +1,2 @@
 from .text_features_add import AddTextFeatureExtractor 
+from .video_features_add import AddVisualFeatureExtractor
