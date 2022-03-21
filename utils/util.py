@@ -23,19 +23,31 @@ def find_model_using_name(model_filename, model_name):
     return model
 
 def create_model(config):
-    model = find_model_using_name("model.model", config['model']['type'])
+    module_name = "model.model"
+    if "module" in config['model']:
+        module_name = config['model']["module"]
+
+    model = find_model_using_name(module_name, config['model']['type'])
     instance = model(config)
     print("model [%s] was created" % (config['model']['type']))
     return instance
 
 def create_dataloader(config):
-    dataloader = find_model_using_name("data_loader.data_loaders", config['data_loader']['type'])
+    module_name = "data_loader.data_loaders"
+    if "module" in config['data_loader']:
+        module_name = config['data_loader']["module"]
+
+    dataloader = find_model_using_name(module_name, config['data_loader']['type'])
     instance = dataloader(config)
     print("dataset [%s] was created" % (config['data_loader']['type']))
     return instance
 
 def create_trainer(model, criterion, metrics, logger, config, data_loader, valid_data_loader):
-    trainer = find_model_using_name("trainer.trainer", config['trainer']['type'])
+    module_name = "trainer.trainer"
+    if "module" in config['trainer']:
+        module_name = config['trainer']["module"]
+
+    trainer = find_model_using_name(module_name, config['trainer']['type'])
     instance = trainer(model, criterion, metrics,
                       config=config,
                       data_loader=data_loader,

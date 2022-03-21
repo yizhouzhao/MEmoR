@@ -34,12 +34,12 @@ class AddMEmoRTrainer(BaseTrainer):
         self.model.train()
         self.train_metrics.reset()
         for batch_idx, data in enumerate(self.data_loader):          
-            target, U_v, U_a, U_t, U_p, M_v, M_a, M_t, target_loc, umask, seg_len, n_c = [d.to(self.device) for d in data]
+            target, U_v, U_a, U_t, U_p, M_v, M_a, M_t, target_loc, umask, seg_len, n_c, U_t_add = [d.to(self.device) for d in data]
             
             self.optimizer.zero_grad()
             seq_lengths = [(umask[j] == 1).nonzero().tolist()[-1][0] + 1 for j in range(len(umask))]
             
-            output = self.model(U_v, U_a, U_t, U_p, M_v, M_a, M_t, seq_lengths, target_loc, seg_len, n_c)
+            output = self.model(U_v, U_a, U_t, U_p, M_v, M_a, M_t, seq_lengths, target_loc, seg_len, n_c, U_t_add)
             assert output.shape[0] == target.shape[0]
             target = target.squeeze(1)
             loss = self.criterion(output, target)
@@ -84,10 +84,10 @@ class AddMEmoRTrainer(BaseTrainer):
         outputs, targets= [], []
         with torch.no_grad():
             for batch_idx, data in enumerate(self.valid_data_loader):
-                target, U_v, U_a, U_t, U_p, M_v, M_a, M_t, target_loc, umask, seg_len, n_c = [d.to(self.device) for d in data]
+                target, U_v, U_a, U_t, U_p, M_v, M_a, M_t, target_loc, umask, seg_len, n_c, U_t_add = [d.to(self.device) for d in data]
                 seq_lengths = [(umask[j] == 1).nonzero().tolist()[-1][0] + 1 for j in range(len(umask))]
             
-                output = self.model(U_v, U_a, U_t, U_p, M_v, M_a, M_t, seq_lengths, target_loc, seg_len, n_c)
+                output = self.model(U_v, U_a, U_t, U_p, M_v, M_a, M_t, seq_lengths, target_loc, seg_len, n_c, U_t_add)
                 target = target.squeeze(1)
                 loss = self.criterion(output, target)
                 

@@ -88,7 +88,7 @@ class AddAMER(BaseModel):
         V_e, A_e, T_e, P_e = self.enc_v(U_v), self.enc_a(U_a), self.enc_t(U_t), self.enc_p(U_p)
 
         # additional 
-        T_e_add = self.enc_v(U_t_add)
+        T_e_add = self.enc_t_add(U_t_add.float())
 
         # merge additional      
         T_e_merge = torch.cat([T_e, T_e_add], dim=-1)

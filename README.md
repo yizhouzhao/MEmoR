@@ -29,6 +29,13 @@ python train.py -c train.json -d 0
 ### Testing
 ```
 python test.py -c test.json -d [gpu_id] -r /path/to/model
+
+Baseline: 
+python test.py -c test.json -d 0 -r saved/models/Train_9_2022/0320_223147/model_best.pth
+
+Add Text: 
+python test_add_text.py -c config_add/test_add_text.json -d 0 -r saved/models/Train_9_2022/0320_222803/model_best.pth
+
 ```
 
 ## The Pretrain Model

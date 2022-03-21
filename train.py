@@ -6,7 +6,7 @@ import model.loss as module_loss
 import model.metric as module_metric
 from parse_config import ConfigParser
 from utils.util import create_model, create_dataloader, create_trainer
-
+import random
 
 # fix random seeds for reproducibility
 SEED = 125
@@ -14,6 +14,8 @@ torch.manual_seed(SEED)
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 np.random.seed(SEED)
+
+np.random.seed(0)
 
 def main(config):
     logger = config.get_logger('train')
